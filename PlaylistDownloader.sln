@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistDownloaderConsole", "PlaylistDownloaderConsole\PlaylistDownloaderConsole.csproj", "{3FF97E20-9E2A-46C6-A597-17A78F5A9ED0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistDownloaderLib", "PlaylistDownloaderLib\PlaylistDownloaderLib.csproj", "{53E45F41-A133-4778-BFE4-703614AFA732}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistDownloaderLib.UnitTest", "PlaylistDownloaderLib.UnitTest\PlaylistDownloaderLib.UnitTest.csproj", "{BBA76BC8-FDD3-4934-AD6B-20E20FFFA9B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3FF97E20-9E2A-46C6-A597-17A78F5A9ED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FF97E20-9E2A-46C6-A597-17A78F5A9ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FF97E20-9E2A-46C6-A597-17A78F5A9ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FF97E20-9E2A-46C6-A597-17A78F5A9ED0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53E45F41-A133-4778-BFE4-703614AFA732}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53E45F41-A133-4778-BFE4-703614AFA732}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53E45F41-A133-4778-BFE4-703614AFA732}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53E45F41-A133-4778-BFE4-703614AFA732}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBA76BC8-FDD3-4934-AD6B-20E20FFFA9B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBA76BC8-FDD3-4934-AD6B-20E20FFFA9B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBA76BC8-FDD3-4934-AD6B-20E20FFFA9B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBA76BC8-FDD3-4934-AD6B-20E20FFFA9B1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
