@@ -1,7 +1,7 @@
 #!/bin/bash
 
 dotnet build -c Release PlaylistDownloader.sln
-rm -rf ../../Tools/PlaylistDownloader
-mkdir ../../Tools/PlaylistDownloader
-cp -r ./PlaylistDownloaderConsole/bin/Release/net6.0/ ../../Tools/PlaylistDownloader
+rm -rf ~/Files/Software/Tools/PlaylistDownloader
+mkdir ~/Files/Software/Tools/PlaylistDownloader
+cp -r ./PlaylistDownloaderConsole/bin/Release/net6.0/ ~/Files/Software/Tools/PlaylistDownloader
 
