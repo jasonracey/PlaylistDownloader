@@ -1,27 +1,31 @@
-﻿namespace PlaylistDownloaderLib;
+﻿using System;
+using System.IO;
 
-public interface IFileWrapper
+namespace PlaylistDownloaderLib
 {
-    void Delete(string path);
-
-    bool Exists(string path);
-}
-
-public class FileWrapper : IFileWrapper
-{
-    public void Delete(string path)
+    public interface IFileWrapper
     {
-        if (string.IsNullOrWhiteSpace(path))
-            throw new ArgumentNullException(nameof(path));
-        
-        File.Delete(path);
+        void Delete(string path);
+
+        bool Exists(string path);
     }
 
-    public bool Exists(string path)
+    public class FileWrapper : IFileWrapper
     {
-        if (string.IsNullOrWhiteSpace(path))
-            throw new ArgumentNullException(nameof(path));
+        public void Delete(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                throw new ArgumentNullException(nameof(path));
         
-        return File.Exists(path);
+            File.Delete(path);
+        }
+
+        public bool Exists(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                throw new ArgumentNullException(nameof(path));
+        
+            return File.Exists(path);
+        }
     }
 }

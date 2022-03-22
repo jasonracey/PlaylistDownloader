@@ -1,8 +1,9 @@
-﻿namespace PlaylistDownloaderLib;
-
-public enum DownloadResultType
+﻿namespace PlaylistDownloaderLib
 {
-    Unknown = 0,
-    Success = 1,
-    Failure = 2
+    public enum DownloadResultType
+    {
+        Unknown = 0,
+        Success = 1,
+        Failure = 2
+    }
 }

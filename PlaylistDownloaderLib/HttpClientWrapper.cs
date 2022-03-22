@@ -1,22 +1,28 @@
-﻿namespace PlaylistDownloaderLib;
+﻿using System;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 
-public interface IHttpClientWrapper
+namespace PlaylistDownloaderLib
 {
-    Task DownloadFileAsync(Uri uri, string outputPath);
-}
-
-public class HttpClientWrapper : IHttpClientWrapper
-{
-    private static readonly HttpClient HttpClient = new();
-
-    public async Task DownloadFileAsync(Uri uri, string outputPath)
+    public interface IHttpClientWrapper
     {
-        if (uri == null)
-            throw new ArgumentNullException(nameof(uri));
-        if (string.IsNullOrWhiteSpace(outputPath))
-            throw new ArgumentNullException(nameof(outputPath));
+        Task DownloadFileAsync(Uri uri, string outputPath);
+    }
+
+    public class HttpClientWrapper : IHttpClientWrapper
+    {
+        private static readonly HttpClient HttpClient = new HttpClient();
+
+        public async Task DownloadFileAsync(Uri uri, string outputPath)
+        {
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+            if (string.IsNullOrWhiteSpace(outputPath))
+                throw new ArgumentNullException(nameof(outputPath));
         
-        var fileBytes = await HttpClient.GetByteArrayAsync(uri);
-        await File.WriteAllBytesAsync(outputPath, fileBytes);
+            var fileBytes = await HttpClient.GetByteArrayAsync(uri);
+            await File.WriteAllBytesAsync(outputPath, fileBytes);
+        }
     }
 }

@@ -1,44 +1,48 @@
-﻿namespace PlaylistDownloaderLib;
+﻿using System;
+using System.IO;
 
-public interface IDestinationPathBuilder
+namespace PlaylistDownloaderLib
 {
-    string CreateDestinationPath(Uri uri);
-}
-
-public class DestinationPathBuilder : IDestinationPathBuilder
-{
-    private readonly IDirectoryWrapper _directoryWrapper;
-    private readonly IFileWrapper _fileWrapper;
-
-    public DestinationPathBuilder(
-        IDirectoryWrapper directoryWrapper,
-        IFileWrapper fileWrapper)
+    public interface IDestinationPathBuilder
     {
-        _directoryWrapper = directoryWrapper ?? throw new ArgumentNullException(nameof(directoryWrapper));
-        _fileWrapper = fileWrapper ?? throw new ArgumentNullException(nameof(fileWrapper));
+        string CreateDestinationPath(Uri uri);
     }
 
-    public string CreateDestinationPath(Uri uri)
+    public class DestinationPathBuilder : IDestinationPathBuilder
     {
-        if (uri == null)
-            throw new ArgumentNullException(nameof(uri));
+        private readonly IDirectoryWrapper _directoryWrapper;
+        private readonly IFileWrapper _fileWrapper;
 
-        var parts = uri.AbsolutePath.Split(Path.DirectorySeparatorChar);
-        var directoryName = parts[^2];
-        var fileName = parts[^1];
-
-        var destinationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", directoryName);
-        
-        // only creates dir if it doesn't already exist
-        _directoryWrapper.CreateDirectory(destinationDirectory);
-
-        var destinationFilePath = Path.Combine(destinationDirectory, fileName);
-
-        if (_fileWrapper.Exists(destinationFilePath))
+        public DestinationPathBuilder(
+            IDirectoryWrapper directoryWrapper,
+            IFileWrapper fileWrapper)
         {
-            _fileWrapper.Delete(destinationFilePath);
+            _directoryWrapper = directoryWrapper ?? throw new ArgumentNullException(nameof(directoryWrapper));
+            _fileWrapper = fileWrapper ?? throw new ArgumentNullException(nameof(fileWrapper));
         }
 
-        return destinationFilePath;
+        public string CreateDestinationPath(Uri uri)
+        {
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+
+            var parts = uri.AbsolutePath.Split(Path.DirectorySeparatorChar);
+            var directoryName = parts[^2];
+            var fileName = parts[^1];
+
+            var destinationDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", directoryName);
+        
+            // only creates dir if it doesn't already exist
+            _directoryWrapper.CreateDirectory(destinationDirectory);
+
+            var destinationFilePath = Path.Combine(destinationDirectory, fileName);
+
+            if (_fileWrapper.Exists(destinationFilePath))
+            {
+                _fileWrapper.Delete(destinationFilePath);
+            }
+
+            return destinationFilePath;
+        }
     }
 }

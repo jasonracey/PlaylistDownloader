@@ -1,17 +1,21 @@
-﻿namespace PlaylistDownloaderLib;
+﻿using System;
+using System.IO;
 
-public interface IDirectoryWrapper
+namespace PlaylistDownloaderLib
 {
-    DirectoryInfo CreateDirectory(string path);
-}
-
-public class DirectoryWrapper : IDirectoryWrapper
-{
-    public DirectoryInfo CreateDirectory(string path)
+    public interface IDirectoryWrapper
     {
-        if (string.IsNullOrWhiteSpace(path))
-            throw new ArgumentNullException(nameof(path));
+        DirectoryInfo CreateDirectory(string path);
+    }
+
+    public class DirectoryWrapper : IDirectoryWrapper
+    {
+        public DirectoryInfo CreateDirectory(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                throw new ArgumentNullException(nameof(path));
         
-        return Directory.CreateDirectory(path);
+            return Directory.CreateDirectory(path);
+        }
     }
 }

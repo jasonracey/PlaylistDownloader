@@ -1,11 +1,15 @@
-namespace PlaylistDownloaderConsole;
+using System.Collections.Generic;
+using System.Linq;
 
-public static class Extensions
+namespace PlaylistDownloaderConsole
 {
-    public static IEnumerable<T> NotNull<T>(this IEnumerable<T?> enumerable) where T : class
+    public static class Extensions
     {
-        return enumerable
-            .Where(t => t != null)
-            .Select(t => t!);
+        public static IEnumerable<T> NotNull<T>(this IEnumerable<T?> enumerable) where T : class
+        {
+            return enumerable
+                .Where(t => t != null)
+                .Select(t => t!);
+        }
     }
 }
