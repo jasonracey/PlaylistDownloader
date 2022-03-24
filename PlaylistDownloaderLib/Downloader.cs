@@ -1,38 +1,35 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PlaylistDownloaderLib
 {
     public interface IDownloader
-{
-    int CompletedDownloadAttempts { get; }
-    string State { get; }
-    int TotalFiles { get; }
+    {
+        ProcessingStatus? ProcessingStatus { get; }
 
-    Task<IEnumerable<DownloadResult>> DownloadFilesAsync(IEnumerable<Uri> uris);
-}
+        Task<IEnumerable<DownloadResult>> DownloadFilesAsync(IEnumerable<Uri> uris);
+    }
 
     public class Downloader : IDownloader
     {
         private readonly IDestinationPathBuilder _destinationPathBuilder;
         private readonly IHttpClientWrapper _httpClientWrapper;
+        
+        private readonly object _resultsLock = new object();
+        private readonly object _statusLock = new object();
 
-        public string State { get; private set; }
-
-        public int CompletedDownloadAttempts { get; private set; }
-
-        public int TotalFiles { get; private set; }
+        public ProcessingStatus? ProcessingStatus { get; private set; }
 
         public Downloader(
             IDestinationPathBuilder destinationPathBuilder,
             IHttpClientWrapper httpClientWrapper)
         {
-            _destinationPathBuilder =
-                destinationPathBuilder ?? throw new ArgumentNullException(nameof(destinationPathBuilder));
+            _destinationPathBuilder = destinationPathBuilder ?? throw new ArgumentNullException(nameof(destinationPathBuilder));
             _httpClientWrapper = httpClientWrapper ?? throw new ArgumentNullException(nameof(httpClientWrapper));
-            State = string.Empty;
+            SetState(0, 0);
         }
 
         public async Task<IEnumerable<DownloadResult>> DownloadFilesAsync(IEnumerable<Uri> uris)
@@ -42,27 +39,37 @@ namespace PlaylistDownloaderLib
 
             var uriArray = uris.ToArray();
 
-            CompletedDownloadAttempts = 0;
-            State = "Downloading...";
-            TotalFiles = uriArray.Length;
+            SetState(0, uriArray.Length, "Downloading...");
 
             var results = new List<DownloadResult>();
-
+            
+            var attemptsCompleted = 0;
             await Task.WhenAll(uriArray.Select(async uri =>
             {
                 try
                 {
                     await DownloadFileAsync(uri).ConfigureAwait(false);
-                    results.Add(new DownloadResult(uri, DownloadResultType.Success,
-                        DownloadResultType.Success.ToString()));
+                    lock (_resultsLock)
+                    {
+                        results.Add(new DownloadResult(uri, DownloadResultType.Success,
+                            DownloadResultType.Success.ToString()));
+                    }
                 }
                 catch (Exception ex)
                 {
-                    results.Add(new DownloadResult(uri, DownloadResultType.Failure, ex.Message));
+                    lock (_resultsLock)
+                    {
+                        results.Add(new DownloadResult(uri, DownloadResultType.Failure, ex.Message));
+                    }
                 }
                 finally
                 {
-                    CompletedDownloadAttempts++;
+                    Interlocked.Increment(ref attemptsCompleted);
+                    
+                    SetState(
+                        countCompleted: attemptsCompleted, 
+                        countTotal: uriArray.Length, 
+                        message: $"Downloaded {attemptsCompleted}/{uriArray.Length}");
                 }
             }));
 
@@ -73,6 +80,14 @@ namespace PlaylistDownloaderLib
         {
             var destinationPath = _destinationPathBuilder.CreateDestinationPath(uri);
             await _httpClientWrapper.DownloadFileAsync(uri, destinationPath).ConfigureAwait(false);
+        }
+        
+        private void SetState(int countCompleted, int countTotal, string? message = null)
+        {
+            lock (_statusLock)
+            {
+                ProcessingStatus = new ProcessingStatus(countCompleted, countTotal, message);
+            }
         }
     }
 }

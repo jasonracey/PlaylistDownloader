@@ -50,9 +50,9 @@ namespace PlaylistDownloaderLib.UnitTest
             var downloadResults = await _downloader.DownloadFilesAsync(new List<Uri>());
 
             // assert
-            Assert.AreEqual("Downloading...", _downloader.State);
-            Assert.AreEqual(0, _downloader.TotalFiles);
-            Assert.AreEqual(0, _downloader.CompletedDownloadAttempts);
+            Assert.AreEqual("Downloading...", _downloader.ProcessingStatus?.Message);
+            Assert.AreEqual(0, _downloader.ProcessingStatus?.CountTotal);
+            Assert.AreEqual(0, _downloader.ProcessingStatus?.CountCompleted);
             Assert.IsNotNull(downloadResults);
             Assert.AreEqual(0, downloadResults.Count());
         }
@@ -72,9 +72,9 @@ namespace PlaylistDownloaderLib.UnitTest
             var downloadResults = await _downloader.DownloadFilesAsync(uris);
 
             // assert
-            Assert.AreEqual("Downloading...", _downloader.State);
-            Assert.AreEqual(uris.Count, _downloader.TotalFiles);
-            Assert.AreEqual(uris.Count, _downloader.CompletedDownloadAttempts);
+            Assert.AreEqual("Downloaded 3/3", _downloader.ProcessingStatus?.Message);
+            Assert.AreEqual(uris.Count, _downloader.ProcessingStatus?.CountTotal);
+            Assert.AreEqual(uris.Count, _downloader.ProcessingStatus?.CountCompleted);
             Assert.IsNotNull(downloadResults);
             var downloadResultsArray = downloadResults as DownloadResult[] ?? downloadResults.ToArray();
             Assert.AreEqual(uris.Count, downloadResultsArray.Length);
@@ -102,7 +102,7 @@ namespace PlaylistDownloaderLib.UnitTest
             await _downloader.DownloadFilesAsync(uris);
 
             // assert
-            Assert.AreEqual(uris.Count, _downloader.CompletedDownloadAttempts);
+            Assert.AreEqual(uris.Count, _downloader.ProcessingStatus?.CountCompleted);
         }
 
         [Test]
@@ -122,9 +122,9 @@ namespace PlaylistDownloaderLib.UnitTest
             var downloadResults = await _downloader.DownloadFilesAsync(uris);
 
             // assert
-            Assert.AreEqual("Downloading...", _downloader.State);
-            Assert.AreEqual(uris.Count, _downloader.TotalFiles);
-            Assert.AreEqual(uris.Count, _downloader.CompletedDownloadAttempts);
+            Assert.AreEqual("Downloaded 1/1", _downloader.ProcessingStatus?.Message);
+            Assert.AreEqual(uris.Count, _downloader.ProcessingStatus?.CountTotal);
+            Assert.AreEqual(uris.Count, _downloader.ProcessingStatus?.CountCompleted);
             Assert.IsNotNull(downloadResults);
             var downloadResultsArray = downloadResults as DownloadResult[] ?? downloadResults.ToArray();
             Assert.AreEqual(uris.Count, downloadResultsArray.Length);
