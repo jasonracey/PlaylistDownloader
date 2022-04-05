@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -47,14 +46,12 @@ namespace PlaylistDownloaderLib.UnitTest
         public async Task WhenUrisEmpty_Skipped()
         {
             // act
-            var downloadResults = await _downloader.DownloadFilesAsync(new List<Uri>());
+            await _downloader.DownloadFilesAsync(new List<Uri>());
 
             // assert
             Assert.AreEqual("Downloading...", _downloader.ProcessingStatus?.Message);
             Assert.AreEqual(0, _downloader.ProcessingStatus?.CountTotal);
             Assert.AreEqual(0, _downloader.ProcessingStatus?.CountCompleted);
-            Assert.IsNotNull(downloadResults);
-            Assert.AreEqual(0, downloadResults.Count());
         }
 
         [Test]
@@ -69,21 +66,12 @@ namespace PlaylistDownloaderLib.UnitTest
             };
 
             // act
-            var downloadResults = await _downloader.DownloadFilesAsync(uris);
+            await _downloader.DownloadFilesAsync(uris);
 
             // assert
             Assert.AreEqual("Downloaded 3/3", _downloader.ProcessingStatus?.Message);
             Assert.AreEqual(uris.Count, _downloader.ProcessingStatus?.CountTotal);
             Assert.AreEqual(uris.Count, _downloader.ProcessingStatus?.CountCompleted);
-            Assert.IsNotNull(downloadResults);
-            var downloadResultsArray = downloadResults as DownloadResult[] ?? downloadResults.ToArray();
-            Assert.AreEqual(uris.Count, downloadResultsArray.Length);
-            foreach (var downloadResult in downloadResultsArray)
-            {
-                Assert.AreEqual(DownloadResultType.Success.ToString(), downloadResult.DownloadResultMessage);
-                Assert.AreEqual(DownloadResultType.Success, downloadResult.DownloadResultType);
-                Assert.IsTrue(uris.Contains(downloadResult.DownloadUri));
-            }
         }
 
         [Test]
@@ -119,21 +107,12 @@ namespace PlaylistDownloaderLib.UnitTest
                 .ThrowsAsync(new Exception(mockMessage));
 
             // act
-            var downloadResults = await _downloader.DownloadFilesAsync(uris);
+            await _downloader.DownloadFilesAsync(uris);
 
             // assert
             Assert.AreEqual("Downloaded 1/1", _downloader.ProcessingStatus?.Message);
             Assert.AreEqual(uris.Count, _downloader.ProcessingStatus?.CountTotal);
             Assert.AreEqual(uris.Count, _downloader.ProcessingStatus?.CountCompleted);
-            Assert.IsNotNull(downloadResults);
-            var downloadResultsArray = downloadResults as DownloadResult[] ?? downloadResults.ToArray();
-            Assert.AreEqual(uris.Count, downloadResultsArray.Length);
-            foreach (var downloadResult in downloadResultsArray)
-            {
-                Assert.AreEqual(mockMessage, downloadResult.DownloadResultMessage);
-                Assert.AreEqual(DownloadResultType.Failure, downloadResult.DownloadResultType);
-                Assert.AreEqual(uris[0], downloadResult.DownloadUri);
-            }
         }
     }
 }
